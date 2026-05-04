@@ -353,8 +353,6 @@
             }
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/10.4.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.4.2/firebase-database-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -403,7 +401,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
         // Data Storage (persists across sessions)
         let appointments = {};
         let currentMode = 'client';
@@ -434,12 +436,15 @@
 
         function initFirebase() {
             try {
-                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length === 0) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                firebaseDatabase = firebase.database();
-                appointmentsRef = firebaseDatabase.ref('appointments');
+                const app = initializeApp(firebaseConfig);
+                firebaseDatabase = getDatabase(app);
+                appointmentsRef = ref(firebaseDatabase, 'appointments');
                 useFirebase = true;
+                try {
+                    getAnalytics(app);
+                } catch (analyticsError) {
+                    console.warn('Firebase Analytics initialization failed:', analyticsError);
+                }
             } catch (error) {
                 console.warn('Firebase initialization failed, using localStorage fallback.', error);
                 useFirebase = false;
@@ -447,8 +452,8 @@
         }
 
         function loadAppointments() {
-            if (useFirebase) {
-                appointmentsRef.on('value', snapshot => {
+            if (useFirebase && appointmentsRef) {
+                onValue(appointmentsRef, snapshot => {
                     appointments = snapshot.val() || {};
                     renderCalendar();
                     const selected = document.getElementById('selectedDate');
@@ -458,6 +463,11 @@
                         const day = parseInt(selected.getAttribute('data-day'));
                         if (!Number.isNaN(year)) showDaySlots(year, month, day);
                     }
+                }, error => {
+                    console.warn('Firebase read failed, using localStorage fallback.', error);
+                    useFirebase = false;
+                    appointments = JSON.parse(localStorage.getItem('mingshaAppointments') || '{}');
+                    renderCalendar();
                 });
             } else {
                 appointments = JSON.parse(localStorage.getItem('mingshaAppointments') || '{}');
@@ -467,7 +477,7 @@
 
         function saveAppointments() {
             if (useFirebase && appointmentsRef) {
-                appointmentsRef.set(appointments).catch(error => {
+                set(appointmentsRef, appointments).catch(error => {
                     console.warn('Firebase save failed, falling back to localStorage.', error);
                     useFirebase = false;
                     localStorage.setItem('mingshaAppointments', JSON.stringify(appointments));
@@ -717,6 +727,15 @@
             document.getElementById('clientInput').value = '';
             document.getElementById('serviceInput').value = '';
         }
+
+        // Expose functions for inline event handlers
+        window.setMode = setMode;
+        window.loginAdmin = loginAdmin;
+        window.prevMonth = prevMonth;
+        window.nextMonth = nextMonth;
+        window.addAppointment = addAppointment;
+        window.clearForm = clearForm;
+        window.deleteAppointment = deleteAppointment;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
