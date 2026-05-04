@@ -353,6 +353,8 @@
             }
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/10.4.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.2/firebase-database-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -403,7 +405,7 @@
 
     <script>
         // Data Storage (persists across sessions)
-        let appointments = JSON.parse(localStorage.getItem('mingshaAppointments')) || {};
+        let appointments = {};
         let currentMode = 'client';
         let currentDate = new Date();
         const ADMIN_PASSWORD = 'mingsha2023'; // Change this password!
@@ -414,9 +416,65 @@
         // Default time slots
         const TIME_SLOTS = ['08:00 AM', '12:30 PM', '03:30 PM', '06:30 PM', 'Night Glam (8pm - 6am)'];
 
-        // Save appointments to localStorage
+        // Firebase config: replace with your Firebase project values
+        const firebaseConfig = {
+            apiKey: 'AIzaSyDXLuL8eWc884inF6kJqrcs_O-RLGdMX38',
+            authDomain: 'mingsha-luxe-calendar.firebaseapp.com',
+            databaseURL: 'https://mingsha-luxe-calendar-default-rtdb.firebaseio.com',
+            projectId: 'mingsha-luxe-calendar',
+            storageBucket: 'mingsha-luxe-calendar.firebasestorage.app',
+            messagingSenderId: '30378331730',
+            appId: '1:30378331730:web:98a7fefbf24e3b5211d98b',
+            measurementId: 'G-R8RQT221YS'
+        };
+
+        let firebaseDatabase = null;
+        let appointmentsRef = null;
+        let useFirebase = false;
+
+        function initFirebase() {
+            try {
+                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length === 0) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                firebaseDatabase = firebase.database();
+                appointmentsRef = firebaseDatabase.ref('appointments');
+                useFirebase = true;
+            } catch (error) {
+                console.warn('Firebase initialization failed, using localStorage fallback.', error);
+                useFirebase = false;
+            }
+        }
+
+        function loadAppointments() {
+            if (useFirebase) {
+                appointmentsRef.on('value', snapshot => {
+                    appointments = snapshot.val() || {};
+                    renderCalendar();
+                    const selected = document.getElementById('selectedDate');
+                    if (selected && selected.getAttribute('data-year')) {
+                        const year = parseInt(selected.getAttribute('data-year'));
+                        const month = parseInt(selected.getAttribute('data-month'));
+                        const day = parseInt(selected.getAttribute('data-day'));
+                        if (!Number.isNaN(year)) showDaySlots(year, month, day);
+                    }
+                });
+            } else {
+                appointments = JSON.parse(localStorage.getItem('mingshaAppointments') || '{}');
+                renderCalendar();
+            }
+        }
+
         function saveAppointments() {
-            localStorage.setItem('mingshaAppointments', JSON.stringify(appointments));
+            if (useFirebase && appointmentsRef) {
+                appointmentsRef.set(appointments).catch(error => {
+                    console.warn('Firebase save failed, falling back to localStorage.', error);
+                    useFirebase = false;
+                    localStorage.setItem('mingshaAppointments', JSON.stringify(appointments));
+                });
+            } else {
+                localStorage.setItem('mingshaAppointments', JSON.stringify(appointments));
+            }
         }
 
         // Set view mode
@@ -662,6 +720,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            loadAppointments();
             setMode('client');
         });
 
