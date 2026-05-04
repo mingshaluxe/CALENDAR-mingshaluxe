@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mingsha Luxe Nail Studio - Olongapo | Calendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ffc0cb);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: #ffc0cb;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .mode-btn.active, .mode-btn:hover {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+        }
+
+        .login-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ffc0cb;
+            border-radius: 25px;
+            font-size: 16px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+
+        .month-year {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .day-header {
+            text-align: center;
+            padding: 10px;
+            background: #ffc0cb;
+            color: #333;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 500;
+            position: relative;
+            background: white;
+            overflow: hidden;
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .day-appointments-preview {
+            font-size: 11px;
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .appointment-item {
+            background: #ff69b4;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .day-cell.today .day-number {
+            color: #ff1493;
+            font-size: 16px;
+        }
+
+        .day-cell.has-appointments {
+            background: #fffaf0;
+            border: 2px solid #ff69b4;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 105, 180, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); }
+        }
+
+        .day-cell.other-month {
+            color: #ccc;
+            background: rgba(255, 192, 203, 0.3);
+        }
+
+        .day-slots {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.3);
+            margin-top: 20px;
+        }
+
+        .day-slots.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 15px;
+            background: #ffc0cb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot.available {
+            background: linear-gradient(45deg, #90ee90, #32cd32);
+            color: white;
+        }
+
+        .slot.occupied {
+            background: linear-gradient(45deg, #ff6b6b, #ff4757);
+            color: white;
+        }
+
+        .slot:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .admin-controls {
+            display: none;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-controls.active {
+            display: flex;
+        }
+
+        .admin-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ffc0cb;
+            border-radius: 20px;
+            font-size: 14px;
+            min-width: 100px;
+        }
+
+        .admin-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff4757) !important;
+            padding: 8px 12px !important;
+            border-radius: 50% !important;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .client-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .service-name {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💅 MINGSHA LUXE NAIL STUDIO</h1>
+            <p>OLONGAPO | Premium Nail Services</p>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setMode('client', this)">👤 Client View</button>
+            <button class="mode-btn" onclick="setMode('admin', this)">🔐 Admin Panel</button>
+        </div>
+
+        <!-- Admin Login -->
+        <div id="adminLogin" class="login-section" style="display: none;">
+            <h3 style="color: #ff69b4; margin-bottom: 20px;">🔐 Admin Login</h3>
+            <input type="password" class="login-input" id="adminPassword" placeholder="Enter Admin Password">
+            <button class="login-btn" onclick="loginAdmin()">Login to Admin Panel</button>
+        </div>
+
+        <!-- Calendar Header -->
+        <div id="calendarHeader" class="calendar-header" style="display: none;">
+            <button class="nav-btn" onclick="prevMonth()">‹</button>
+            <div class="month-year" id="monthYear"></div>
+            <button class="nav-btn" onclick="nextMonth()">›</button>
+        </div>
+
+        <!-- Admin Controls -->
+        <div id="adminControls" class="admin-controls">
+            <input type="time" class="admin-input" id="timeInput">
+            <input type="text" class="admin-input" id="clientInput" placeholder="Client Name">
+            <input type="text" class="admin-input" id="serviceInput" placeholder="Service">
+            <button class="admin-btn" onclick="addAppointment()">➕ Add</button>
+            <button class="admin-btn" onclick="clearForm()">🗑️ Clear</button>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid" id="calendarGrid" style="display: none;">
+            <!-- Days will be populated by JS -->
+        </div>
+
+        <!-- Day Slots -->
+        <div id="daySlots" class="day-slots">
+            <h3 id="selectedDate"></h3>
+            <div id="slotsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage (persists across sessions)
+        let appointments = JSON.parse(localStorage.getItem('mingshaAppointments')) || {};
+        let currentMode = 'client';
+        let currentDate = new Date();
+        const ADMIN_PASSWORD = 'mingsha2023'; // Change this password!
+
+        // Nail Services
+        const NAIL_SERVICES = ['Basic Manicure', 'Gel Polish', 'Acrylic Full Set', 'Nail Art', 'Pedicure', 'Fill-in'];
+
+        // Default time slots (9AM - 8PM)
+        const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+
+        // Save appointments to localStorage
+        function saveAppointments() {
+            localStorage.setItem('mingshaAppointments', JSON.stringify(appointments));
+        }
+
+        // Set view mode
+        function setMode(mode, btn) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            else if (mode === 'client') document.querySelector('.mode-btn:first-child').classList.add('active');
+
+            document.getElementById('adminLogin').style.display = mode === 'admin' ? 'block' : 'none';
+            document.getElementById('adminControls').classList.toggle('active', false);
+            document.getElementById('calendarHeader').style.display = 'none';
+            document.getElementById('calendarGrid').style.display = 'none';
+            document.getElementById('daySlots').classList.remove('active');
+
+            if (mode === 'client') {
+                showCalendar();
+            }
+        }
+
+        // Admin login
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminControls').classList.add('active');
+                showCalendar();
+            } else {
+                alert('❌ Wrong Password!');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // Show calendar
+        function showCalendar() {
+            document.getElementById('calendarHeader').style.display = 'flex';
+            document.getElementById('calendarGrid').style.display = 'grid';
+            renderCalendar();
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            document.getElementById('monthYear').textContent = currentDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long' 
+            });
+
+            // Day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            days.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'day-header';
+                div.textContent = day;
+                grid.appendChild(div);
+            });
+
+            // Calendar days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+
+            // Empty cells for previous month
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                div.className = 'day-cell other-month';
+                grid.appendChild(div);
+            }
+
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const div = document.createElement('div');
+                div.className = 'day-cell';
+
+                const dayNumSpan = document.createElement('span');
+                dayNumSpan.className = 'day-number';
+                dayNumSpan.textContent = day;
+                div.appendChild(dayNumSpan);
+
+                const appointmentsPreview = document.createElement('div');
+                appointmentsPreview.className = 'day-appointments-preview';
+                
+                const cellDate = new Date(year, month, day);
+                if (cellDate.toDateString() === today.toDateString()) {
+                    div.classList.add('today');
+                }
+
+                // Check if has appointments and display them
+                if (appointments[dateKey] && appointments[dateKey].length > 0) {
+                    div.classList.add('has-appointments');
+                    appointments[dateKey].forEach(apt => {
+                        const aptItem = document.createElement('div');
+                        aptItem.className = 'appointment-item';
+                        aptItem.textContent = `${apt.time} ${apt.client}`;
+                        aptItem.title = `${apt.time} - ${apt.client} (${apt.service})`;
+                        appointmentsPreview.appendChild(aptItem);
+                    });
+                }
+                
+                div.appendChild(appointmentsPreview);
+                div.onclick = () => showDaySlots(year, month, day);
+                grid.appendChild(div);
+            }
+        }
+
+        // Show day time slots
+        function showDaySlots(year, month, day) {
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            document.getElementById('selectedDate').textContent = 
+                `${day} ${new Date(year, month, day).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+            document.getElementById('selectedDate').setAttribute('data-year', year);
+            document.getElementById('selectedDate').setAttribute('data-month', month);
+            document.getElementById('selectedDate').setAttribute('data-day', day);
+            
+            const slotsContainer = document.getElementById('slotsContainer');
+            slotsContainer.innerHTML = '';
+
+            TIME_SLOTS.forEach(time => {
+                const slotKey = `${dateKey}-${time}`;
+                const appointment = appointments[dateKey]?.find(a => a.time === time);
+
+                const slot = document.createElement('div');
+                slot.className = `slot ${appointment ? 'occupied' : 'available'}`;
+
+                if (currentMode === 'client') {
+                    // Client view
+                    if (appointment) {
+                        slot.innerHTML = `
+                            <div>
+                                <div class="client-name">${appointment.client}</div>
+                                <div class="service-name">${appointment.service}</div>
+                            </div>
+                            <div>${time}</div>
+                        `;
+                    } else {
+                        slot.innerHTML = `
+                            <div>✅ Available</div>
+                            <div>${time}</div>
+                        `;
+                        slot.onclick = () => alert(`🎉 ${time} is available! Call to book: [Your Phone Number]`);
+                    }
+                } else {
+                    // Admin view
+                    if (appointment) {
+                        slot.innerHTML = `
+                            <div>
+                                <div class="client-name">${appointment.client}</div>
+                                <div class="service-name">${appointment.service}</div>
+                            </div>
+                            <div>${time} 
+                                <button class="delete-btn" onclick="deleteAppointment('${dateKey}', '${time}')">×</button>
+                            </div>
+                        `;
+                    } else {
+                        slot.onclick = () => {
+                            document.getElementById('timeInput').value = time;
+                            document.getElementById('clientInput').focus();
+                        };
+                        slot.innerHTML = `
+                            <div>➕ Add Appointment</div>
+                            <div>${time}</div>
+                        `;
+                    }
+                }
+
+                slotsContainer.appendChild(slot);
+            });
+
+            document.getElementById('daySlots').classList.add('active');
+        }
+
+        // Add appointment
+        function addAppointment() {
+            const time = document.getElementById('timeInput').value;
+            const client = document.getElementById('clientInput').value.trim();
+            const service = document.getElementById('serviceInput').value.trim() || 'Nail Service';
+
+            if (!time || !client) {
+                alert('⛔ Please fill time and client name!');
+                return;
+            }
+
+            const selectedEl = document.getElementById('selectedDate');
+            const year = parseInt(selectedEl.getAttribute('data-year'));
+            const month = parseInt(selectedEl.getAttribute('data-month'));
+            const day = parseInt(selectedEl.getAttribute('data-day'));
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+            if (!appointments[dateKey]) appointments[dateKey] = [];
+            
+            // Check if slot already exists
+            const existing = appointments[dateKey].find(a => a.time === time);
+            if (existing) {
+                alert('⛔ Slot already booked!');
+                return;
+            }
+
+            appointments[dateKey].push({ time, client, service });
+            saveAppointments();
+            renderCalendar();
+            showDaySlots(year, month, day);
+            clearForm();
+            alert('✅ Appointment added successfully!');
+        }
+
+        // Delete appointment
+        function deleteAppointment(dateKey, time) {
+            if (confirm('🗑️ Delete this appointment?')) {
+                appointments[dateKey] = appointments[dateKey].filter(a => a.time !== time);
+                if (appointments[dateKey].length === 0) delete appointments[dateKey];
+                saveAppointments();
+                renderCalendar();
+                showDaySlots(
+                    parseInt(dateKey.split('-')[0]),
+                    parseInt(dateKey.split('-')[1]) - 1,
+                    parseInt(dateKey.split('-')[2])
+                );
+            }
+        }
+
+        // Navigation
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // Utility functions
+        function clearForm() {
+            document.getElementById('timeInput').value = '';
+            document.getElementById('clientInput').value = '';
+            document.getElementById('serviceInput').value = '';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setMode('client');
+        });
+
+        // Mobile optimizations
+        let touchStartX = 0;
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextMonth();
+                else prevMonth();
+            }
+        });
+    </script>
+</body>
+</html>
