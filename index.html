@@ -382,7 +382,7 @@
 
         <!-- Admin Controls -->
         <div id="adminControls" class="admin-controls">
-            <input type="time" class="admin-input" id="timeInput">
+            <input type="text" class="admin-input" id="timeInput" placeholder="Select a time slot">
             <input type="text" class="admin-input" id="clientInput" placeholder="Client Name">
             <input type="text" class="admin-input" id="serviceInput" placeholder="Service">
             <button class="admin-btn" onclick="addAppointment()">➕ Add</button>
@@ -411,8 +411,8 @@
         // Nail Services
         const NAIL_SERVICES = ['Basic Manicure', 'Gel Polish', 'Acrylic Full Set', 'Nail Art', 'Pedicure', 'Fill-in'];
 
-        // Default time slots (9AM - 8PM)
-        const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+        // Default time slots
+        const TIME_SLOTS = ['08:00 AM', '12:30 PM', '03:30 PM', '06:30 PM', 'Night Glam (8pm - 6am)'];
 
         // Save appointments to localStorage
         function saveAppointments() {
@@ -561,7 +561,7 @@
                             <div>✅ Available</div>
                             <div>${time}</div>
                         `;
-                        slot.onclick = () => alert(`🎉 ${time} is available! Call to book: [Your Phone Number]`);
+                        slot.onclick = () => alert(`🎉 ${time} is available! You can message us first on WhatsApp to book your nail appointment. If you don’t get a response, you may call the same number: 0931 883 3614.`);
                     }
                 } else {
                     // Admin view
