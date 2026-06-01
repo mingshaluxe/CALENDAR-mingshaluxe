@@ -369,7 +369,8 @@
         <!-- Admin Login -->
         <div id="adminLogin" class="login-section" style="display: none;">
             <h3 style="color: #ff69b4; margin-bottom: 20px;">🔐 Admin Login</h3>
-            <input type="password" class="login-input" id="adminPassword" placeholder="Enter Admin Password">
+            <input type="email" class="login-input" id="adminEmail" placeholder="Enter Admin Email">
+<input type="password" class="login-input" id="adminPassword" placeholder="Enter Admin Password">
             <button class="login-btn" onclick="loginAdmin()">Login to Admin Panel</button>
         </div>
 
@@ -507,16 +508,18 @@
 
         // Admin login
         function loginAdmin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminControls').classList.add('active');
-                showCalendar();
-            } else {
-                alert('❌ Wrong Password!');
-                document.getElementById('adminPassword').value = '';
-            }
-        }
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminControls').classList.add('active');
+        showCalendar();
+    } else {
+        alert('❌ Invalid Email or Password!');
+        document.getElementById('adminPassword').value = '';
+    }
+}
 
         // Show calendar
         function showCalendar() {
