@@ -407,11 +407,16 @@
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
         import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
+        import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
         // Data Storage (persists across sessions)
         let appointments = {};
         let currentMode = 'client';
         let currentDate = new Date();
-        const ADMIN_PASSWORD = 'Mingsha2023'; // Change this password!
+        
 
         // Nail Services
         const NAIL_SERVICES = ['Basic Manicure', 'Gel Polish', 'Acrylic Full Set', 'Nail Art', 'Pedicure', 'Fill-in'];
@@ -432,13 +437,17 @@
         };
 
         let firebaseDatabase = null;
-        let appointmentsRef = null;
-        let useFirebase = false;
+let appointmentsRef = null;
+let auth = null;
+let useFirebase = false;
 
         function initFirebase() {
             try {
                 const app = initializeApp(firebaseConfig);
-                firebaseDatabase = getDatabase(app);
+
+auth = getAuth(app);
+
+firebaseDatabase = getDatabase(app);
                 appointmentsRef = ref(firebaseDatabase, 'appointments');
                 useFirebase = true;
                 try {
@@ -507,17 +516,22 @@
         }
 
         // Admin login
-        function loginAdmin() {
+        async function loginAdmin() {
     const email = document.getElementById('adminEmail').value.trim();
     const password = document.getElementById('adminPassword').value;
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminControls').classList.add('active');
+
+        alert('✅ Login Successful');
+
         showCalendar();
-    } else {
-        alert('❌ Invalid Email or Password!');
-        document.getElementById('adminPassword').value = '';
+
+    } catch (error) {
+        alert('❌ Login Failed: ' + error.message);
     }
 }
 
